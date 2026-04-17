@@ -1,0 +1,110 @@
+<div class="container">
+  <!-- Encabezado -->
+  <header class="header">
+    <h1>Sistema de Comentarios</h1>
+    <p>Consumiendo API REST: JSONPlaceholder</p>
+  </header>
+
+  <!-- Sección de Formulario -->
+  <section class="formulario-section">
+    <h2>Registrar Nuevo Comentario</h2>
+    
+    <form [formGroup]="formulario" (ngSubmit)="enviarComentario()">
+      <!-- Campo Nombre -->
+      <div class="form-group">
+        <label for="nombre">Nombre:</label>
+        <input 
+          type="text" 
+          id="nombre" 
+          formControlName="nombre"
+          placeholder="Ingresa tu nombre"
+          class="form-control"
+        />
+        <small class="error" *ngIf="nombre?.invalid && nombre?.touched">
+          El nombre es requerido y debe tener al menos 3 caracteres
+        </small>
+      </div>
+
+      <!-- Campo Email -->
+      <div class="form-group">
+        <label for="email">Email:</label>
+        <input 
+          type="email" 
+          id="email" 
+          formControlName="email"
+          placeholder="Ingresa tu email"
+          class="form-control"
+        />
+        <small class="error" *ngIf="email?.invalid && email?.touched">
+          Por favor ingresa un email válido
+        </small>
+      </div>
+
+      <!-- Campo Comentario -->
+      <div class="form-group">
+        <label for="comentario">Comentario:</label>
+        <textarea 
+          id="comentario" 
+          formControlName="comentario"
+          placeholder="Escribe tu comentario aquí..."
+          rows="4"
+          class="form-control"
+        ></textarea>
+        <small class="error" *ngIf="comentario?.invalid && comentario?.touched">
+          El comentario es requerido y debe tener al menos 5 caracteres
+        </small>
+      </div>
+
+      <!-- Botón Enviar -->
+      <button 
+        type="submit" 
+        [disabled]="formulario.invalid || cargando"
+        class="btn-enviar"
+      >
+        {{ cargando ? 'Enviando...' : 'Enviar Comentario' }}
+      </button>
+    </form>
+
+    <!-- Mensajes de Estado -->
+    <div *ngIf="mensajeExito" class="mensaje exito">
+      ✓ {{ mensajeExito }}
+    </div>
+    <div *ngIf="mensajeError" class="mensaje error">
+      ✗ {{ mensajeError }}
+    </div>
+  </section>
+
+  <!-- Sección de Lista de Comentarios -->
+  <section class="comentarios-section">
+    <div class="header-comentarios">
+      <h2>Listado de Comentarios</h2>
+      <div class="contador">
+        Total: <strong>{{ contadorComentarios }}</strong>
+      </div>
+    </div>
+
+    <!-- Loading -->
+    <div *ngIf="cargando" class="loading">
+      Cargando comentarios...
+    </div>
+
+    <!-- Lista de Comentarios -->
+    <div *ngIf="!cargando && comentarios.length > 0" class="comentarios-lista">
+      <div *ngFor="let com of comentarios; let i = index" class="comentario-card">
+        <div class="comentario-numero">#{{ i + 1 }}</div>
+        <div class="comentario-contenido">
+          <h3 class="comentario-nombre">{{ com.name }}</h3>
+          <p class="comentario-body">{{ com.body }}</p>
+          <small class="comentario-fecha">
+            {{ com.fecha ? ('Enviado: ' + com.fecha) : 'De API' }}
+          </small>
+        </div>
+      </div>
+    </div>
+
+    <!-- Sin comentarios -->
+    <div *ngIf="!cargando && comentarios.length === 0" class="sin-comentarios">
+      No hay comentarios disponibles
+    </div>
+  </section>
+</div>
